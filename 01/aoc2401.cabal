@@ -1,0 +1,33 @@
+cabal-version:   3.12
+name:            aoc2401
+version:         0.1
+build-type:      Simple
+
+category:        Devel
+synopsis:        load modules
+description:     Loads modules I want to be able to mess around with.
+license:         MIT
+author:          Nadia Chambers <nadia.yvette.chambers@gmail.com>
+maintainer:      Nadia Chambers <nadia.yvette.chambers@gmail.com>
+
+common common-build-parameters
+  default-language: GHC2024
+  default-extensions:
+    ApplicativeDo
+    BlockArguments
+    LambdaCase
+    OverloadedStrings
+    PackageImports
+  ghc-options:
+    -Wall
+    -Wcompat
+
+executable aoc2401
+  import: common-build-parameters
+  hs-source-dirs:   app, src
+  main-is:          Main.hs
+  build-depends:
+      base
+    , composition-extra
+    , optparse-applicative
+    , text

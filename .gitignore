@@ -19,6 +19,14 @@ result*
 /launch-*
 stack.yaml.lock
 
+# ELF object files
+*.o
+
+# Mercury intermediate files
+*.c_date
+*.d
+*.mh
+
 /.cache
 /db
 /db-[0-9]

@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Control.Applicative (Alternative (..))
-import Control.Arrow ((***))
+import Control.Arrow ((***), second)
 import Control.Monad (join)
 import Data.Functor.Syntax ((<$$>))
 import Data.List (sort)
@@ -70,8 +70,11 @@ getIntPairs = \case
 dup :: (t -> t') -> (t, t) -> (t', t')
 dup = join (***)
 
--- sumDists :: [(Integer, Integer)] -> Integer
--- sumDists = sum . uncurry (zipWith \x y -> abs (x - y)) .  dup sort . unzip
+occur' :: (Integral i, Ord t) => t -> MultiSet t -> i
+x `occur'` ms = fromIntegral $ x `MultiSet.occur` ms
+
+toOccurList' :: (Integral i, Ord t) => MultiSet t -> [(t, i)]
+toOccurList' ms = second fromIntegral <$> MultiSet.toOccurList ms
 
 main :: IO ()
 main = do
@@ -81,4 +84,4 @@ main = do
       ams, bms :: MultiSet Integer
       (ams, bms) = dup MultiSet.fromList (as, bs)
   print . sum $ zipWith (\x y -> abs (x - y)) as bs
-  print $ sum [a * fromIntegral (o * (a `MultiSet.occur` bms))| (a, o) <- MultiSet.toOccurList ams]
+  print $ sum [a * o * (a `occur'` bms)| (a, o) <- toOccurList' ams]

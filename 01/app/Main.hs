@@ -7,6 +7,10 @@ import Data.Functor.Syntax ((<$$>))
 import Data.List (sort)
 import Data.Maybe (mapMaybe)
 
+import "multiset" Data.MultiSet (MultiSet)
+import qualified "multiset" Data.MultiSet as
+  MultiSet (fromList, occur, toOccurList)
+
 import "optparse-applicative" Options.Applicative ((<**>))
 import qualified "optparse-applicative" Options.Applicative as
   Options (InfoMod, Parser, ParserInfo, execParser, flag', fullDesc
@@ -66,10 +70,15 @@ getIntPairs = \case
 dup :: (t -> t') -> (t, t) -> (t', t')
 dup = join (***)
 
-sumDists :: [(Integer, Integer)] -> Integer
-sumDists = sum . uncurry (zipWith \x y -> abs (x - y)) .  dup sort . unzip
+-- sumDists :: [(Integer, Integer)] -> Integer
+-- sumDists = sum . uncurry (zipWith \x y -> abs (x - y)) .  dup sort . unzip
 
 main :: IO ()
 main = do
   txt <- getAOCcontents =<< Options.execParser optParser
-  print . sumDists . mapMaybe getIntPairs $ parseAOCvals txt
+  let as, bs :: [Integer]
+      (as, bs) = dup sort . unzip . mapMaybe getIntPairs $ parseAOCvals txt
+      ams, bms :: MultiSet Integer
+      (ams, bms) = dup MultiSet.fromList (as, bs)
+  print . sum $ zipWith (\x y -> abs (x - y)) as bs
+  print $ sum [a * fromIntegral (o * (a `MultiSet.occur` bms))| (a, o) <- MultiSet.toOccurList ams]

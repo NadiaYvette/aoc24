@@ -29,5 +29,6 @@ executable aoc2401
   build-depends:
       base
     , composition-extra
+    , multiset
     , optparse-applicative
     , text
